@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const CounterApp());
@@ -62,6 +63,7 @@ class _CounterHomePageState extends State<CounterHomePage> {
         false;
 
     if (shouldReset) {
+      HapticFeedback.heavyImpact();
       _resetCount();
     }
   }
@@ -208,6 +210,7 @@ class _CounterDevice extends StatelessWidget {
           ),
           SizedBox(height: width * 0.05),
           GestureDetector(
+            onTapDown: (_) => HapticFeedback.heavyImpact(),
             onTap: onReset,
             child: Container(
               height: displayHeight,
@@ -256,6 +259,7 @@ class _ResetButton extends StatelessWidget {
     final double size = diameter.clamp(48.0, 76.0).toDouble();
     return InkWell(
       customBorder: const CircleBorder(),
+      onTapDown: (_) => HapticFeedback.heavyImpact(),
       onTap: onTap,
       child: Container(
         width: size,
@@ -363,6 +367,13 @@ class _ControlButton extends StatelessWidget {
     return Material(
       color: onPressed == null ? color.withOpacity(0.45) : color,
       child: InkWell(
+        onTapDown: (_) {
+          if (onPressed != null) {
+            HapticFeedback.heavyImpact();
+          } else {
+            HapticFeedback.selectionClick();
+          }
+        },
         onTap: onPressed,
         splashColor: Colors.white24,
         child: Center(child: Text(label, style: textStyle)),
