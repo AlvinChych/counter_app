@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -267,9 +265,9 @@ class _ResetButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF00B7C2),
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
               offset: const Offset(0, 8),
               blurRadius: 12,
             ),
@@ -297,7 +295,6 @@ class _CounterControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canDecrement = count > 0;
-    const canIncrement = true;
     final double size = diameter;
     final double dividerHeight = (size * 0.02).clamp(4.0, 12.0).toDouble();
 
@@ -323,12 +320,12 @@ class _CounterControls extends StatelessWidget {
                 child: _ControlButton(
                   label: '+',
                   color: const Color(0xFFF875AA),
-                  onPressed: canIncrement ? onIncrement : null,
+                  onPressed: onIncrement,
                 ),
               ),
               Container(
                 height: dividerHeight,
-                color: Colors.black.withOpacity(0.25),
+                color: Colors.black.withValues(alpha: 0.25),
               ),
               Expanded(
                 child: _ControlButton(
@@ -365,7 +362,7 @@ class _ControlButton extends StatelessWidget {
     );
 
     return Material(
-      color: onPressed == null ? color.withOpacity(0.45) : color,
+      color: onPressed == null ? color.withValues(alpha: 0.45) : color,
       child: InkWell(
         onTapDown: (_) {
           if (onPressed != null) {

@@ -1,4 +1,4 @@
-package com.example.counter_app
+package com.alvinworks.counter
 
 import io.flutter.embedding.android.FlutterActivity
 
