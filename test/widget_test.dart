@@ -39,15 +39,15 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.restart_alt));
     await tester.pumpAndSettle();
-    expect(find.text('Reset counter?'), findsOneWidget);
+    expect(find.text('清除計數器？'), findsOneWidget);
 
-    await tester.tap(find.text('Cancel'));
+    await tester.tap(find.text('取消'));
     await tester.pumpAndSettle();
     expect(find.text('2'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.restart_alt));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Reset'));
+    await tester.tap(find.widgetWithText(FilledButton, '清除'));
     await tester.pumpAndSettle();
     expect(find.text('0'), findsOneWidget);
   });

@@ -76,7 +76,7 @@ class _CounterHomePageState extends State<CounterHomePage> {
     });
   }
 
-  void _decrement() {
+  void _handleDecrement() {
     if (_count == 0) {
       return;
     }
@@ -94,7 +94,11 @@ class _CounterHomePageState extends State<CounterHomePage> {
           count: _count,
           onReset: _handleResetRequest,
           onIncrement: _increment,
-          onDecrement: _decrement,
+          onDecrement: _handleDecrement,
+          incrementLabel: '+',
+          decrementLabel: '−',
+          countFlex: 30,
+          controlsFlex: 35,
         ),
       ),
     );
@@ -107,12 +111,20 @@ class _CounterView extends StatelessWidget {
     required this.onReset,
     required this.onIncrement,
     required this.onDecrement,
+    required this.incrementLabel,
+    required this.decrementLabel,
+    required this.countFlex,
+    required this.controlsFlex,
   });
 
   final int count;
   final VoidCallback onReset;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final String incrementLabel;
+  final String decrementLabel;
+  final int countFlex;
+  final int controlsFlex;
 
   @override
   Widget build(BuildContext context) {
@@ -123,61 +135,55 @@ class _CounterView extends StatelessWidget {
 
         return SizedBox(
           width: double.infinity,
+          height: constraints.maxHeight,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 24 * scale),
+              const Spacer(flex: 1),
               _ResetButton(onTap: onReset, scale: scale),
-              SizedBox(height: 16 * scale),
-              Text(
-                '重置',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5 * scale,
-                  fontSize: 14 * scale,
-                ),
-              ),
-              SizedBox(height: 16 * scale),
-              Text(
-                '計數器',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2 * scale,
-                  fontSize: 32 * scale,
-                ),
-              ),
-              SizedBox(height: 32 * scale),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 48 * scale,
-                  vertical: 24 * scale,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCFDBD5),
-                  borderRadius: BorderRadius.circular(24 * scale),
-                  border: Border.all(color: Colors.black87, width: 4 * scale),
-                ),
-                child: Text(
-                  '$count',
-                  style: TextStyle(
-                    fontSize: 120 * scale,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF202020),
-                    letterSpacing: 4 * scale,
-                    fontFeatures: const [FontFeature.tabularFigures()],
+              const Spacer(flex: 1),
+              Expanded(
+                flex: countFlex,
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(horizontal: 24 * scale),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8 * scale,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCFDBD5),
+                    borderRadius: BorderRadius.circular(24 * scale),
+                    border: Border.all(color: Colors.black87, width: 4 * scale),
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        '$count',
+                        style: const TextStyle(
+                          fontSize: 250,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF202020),
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 32 * scale),
-              _CounterControls(
-                count: count,
-                onIncrement: onIncrement,
-                onDecrement: onDecrement,
-                scale: scale,
+              const Spacer(flex: 1),
+              Expanded(
+                flex: controlsFlex,
+                child: _CounterControls(
+                  count: count,
+                  onIncrement: onIncrement,
+                  onDecrement: onDecrement,
+                  incrementLabel: incrementLabel,
+                  decrementLabel: decrementLabel,
+                  scale: scale,
+                ),
               ),
-              SizedBox(height: 48 * scale),
+              const Spacer(flex: 1),
             ],
           ),
         );
@@ -207,7 +213,7 @@ class _ResetButton extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               offset: Offset(0, 8 * scale),
               blurRadius: 12 * scale,
             ),
@@ -224,12 +230,16 @@ class _CounterControls extends StatelessWidget {
     required this.count,
     required this.onIncrement,
     required this.onDecrement,
+    required this.incrementLabel,
+    required this.decrementLabel,
     required this.scale,
   });
 
   final int count;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final String incrementLabel;
+  final String decrementLabel;
   final double scale;
 
   @override
@@ -237,46 +247,44 @@ class _CounterControls extends StatelessWidget {
     final canDecrement = count > 0;
     final double dividerHeight = 4.0 * scale;
 
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.symmetric(horizontal: 24 * scale),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32 * scale),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 10 * scale),
-              blurRadius: 18 * scale,
-              color: Colors.black38,
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 24 * scale),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32 * scale),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 10 * scale),
+            blurRadius: 18 * scale,
+            color: Colors.black38,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(32 * scale),
+        child: Column(
+          children: [
+            Expanded(
+              child: _ControlButton(
+                label: incrementLabel,
+                color: const Color(0xFFF875AA),
+                onPressed: onIncrement,
+                scale: scale,
+              ),
+            ),
+            Container(
+              height: dividerHeight,
+              color: Colors.black.withValues(alpha: 0.25),
+            ),
+            Expanded(
+              child: _ControlButton(
+                label: decrementLabel,
+                color: const Color(0xFF4CAF50),
+                onPressed: canDecrement ? onDecrement : null,
+                scale: scale,
+              ),
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(32 * scale),
-          child: Column(
-            children: [
-              Expanded(
-                child: _ControlButton(
-                  label: '+',
-                  color: const Color(0xFFF875AA),
-                  onPressed: onIncrement,
-                  scale: scale,
-                ),
-              ),
-              Container(
-                height: dividerHeight,
-                color: Colors.black.withOpacity(0.25),
-              ),
-              Expanded(
-                child: _ControlButton(
-                  label: '−',
-                  color: const Color(0xFF4CAF50),
-                  onPressed: canDecrement ? onDecrement : null,
-                  scale: scale,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -298,15 +306,14 @@ class _ControlButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-      fontSize: 96 * scale,
+    const textStyle = TextStyle(
       fontWeight: FontWeight.w400,
       color: Colors.white,
       height: 1.0,
     );
 
     return Material(
-      color: onPressed == null ? color.withOpacity(0.45) : color,
+      color: onPressed == null ? color.withValues(alpha: 0.45) : color,
       child: InkWell(
         onTapDown: (_) {
           if (onPressed != null) {
@@ -318,7 +325,14 @@ class _ControlButton extends StatelessWidget {
         onTap: onPressed,
         splashColor: Colors.white24,
         child: Center(
-          child: Text(label, style: textStyle, textAlign: TextAlign.center),
+          child: FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.9,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Text(label, style: textStyle, textAlign: TextAlign.center),
+            ),
+          ),
         ),
       ),
     );
